@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-
 export const fetchAnimals = createAsyncThunk(
   'animals/fetchAnimals',
   async (_, { rejectWithValue }) => {
@@ -50,17 +49,15 @@ export const deleteAnimal = createAsyncThunk(
   }
 );
 
-
 const animalSlice = createSlice({
   name: 'animals',
   initialState: {
     data: [],
     status: 'idle',
-    error: null
+    error: null,
   },
   reducers: {
-    
-    setAnimalsLocal: (state, action) => {
+    setAnimals: (state, action) => {
       state.data = action.payload;
     },
     addAnimalLocal: (state, action) => {
@@ -87,7 +84,7 @@ const animalSlice = createSlice({
       })
       .addCase(fetchAnimals.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(addAnimal.fulfilled, (state, action) => {
         state.data.push(action.payload);
@@ -104,11 +101,6 @@ const animalSlice = createSlice({
   },
 });
 
-export const { 
-  setAnimalsLocal, 
-  addAnimalLocal, 
-  updateAnimalLocal, 
-  deleteAnimalLocal 
-} = animalSlice.actions;
-
+export const { setAnimals, addAnimalLocal, updateAnimalLocal, deleteAnimalLocal } = animalSlice.actions;
 export default animalSlice.reducer;
+

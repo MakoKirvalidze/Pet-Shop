@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-
 export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async (_, { rejectWithValue }) => {
@@ -50,46 +49,57 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
-
 const categorySlice = createSlice({
   name: 'categories',
-  initialState: [],
+  initialState: {
+    data: [],
+    status: 'idle',
+    error: null,
+  },
   reducers: {
     setCategories: (state, action) => {
-      return action.payload;
+      state.data = action.payload;
     },
-    addCategory: (state, action) => {
-      state.push(action.payload);
+    addCategoryLocal: (state, action) => {
+      state.data.push(action.payload);
     },
-    updateCategory: (state, action) => {
-      const index = state.findIndex(category => category.id === action.payload.id);
+    updateCategoryLocal: (state, action) => {
+      const index = state.data.findIndex(category => category.id === action.payload.id);
       if (index !== -1) {
-        state[index] = action.payload;
+        state.data[index] = action.payload;
       }
     },
-    deleteCategory: (state, action) => {
-      return state.filter(category => category.id !== action.payload);
+    deleteCategoryLocal: (state, action) => {
+      state.data = state.data.filter(category => category.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchCategories.pending, (state) => {
+        state.status = 'loading';
+      })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        return action.payload;
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       })
       .addCase(addCategory.fulfilled, (state, action) => {
-        state.push(action.payload);
+        state.data.push(action.payload);
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        const index = state.findIndex(category => category.id === action.payload.id);
+        const index = state.data.findIndex(category => category.id === action.payload.id);
         if (index !== -1) {
-          state[index] = action.payload;
+          state.data[index] = action.payload;
         }
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        return state.filter(category => category.id !== action.payload);
+        state.data = state.data.filter(category => category.id !== action.payload);
       });
   },
 });
 
-export const { setCategories } = categorySlice.actions;
+export const { setCategories, addCategoryLocal, updateCategoryLocal, deleteCategoryLocal } = categorySlice.actions;
 export default categorySlice.reducer;

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-
 export const fetchAnimalCategories = createAsyncThunk(
   'animalCategories/fetchAnimalCategories',
   async (_, { rejectWithValue }) => {
@@ -28,10 +27,10 @@ export const addAnimalToCategory = createAsyncThunk(
 
 export const removeAnimalFromCategory = createAsyncThunk(
   'animalCategories/removeAnimalFromCategory',
-  async (id, { rejectWithValue }) => {
+  async ({ animalId, categoryId }, { rejectWithValue }) => {
     try {
-      await api.delete(`/animals_with_categories/${id}`);
-      return id;
+      await api.delete(`/animals_with_categories/${animalId}_${categoryId}`);
+      return { animalId, categoryId };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -43,10 +42,9 @@ const animalCategorySlice = createSlice({
   initialState: {
     data: [],
     status: 'idle',
-    error: null
+    error: null,
   },
   reducers: {
-   
     setAnimalCategories: (state, action) => {
       state.data = action.payload;
     },
@@ -74,22 +72,17 @@ const animalCategorySlice = createSlice({
       })
       .addCase(fetchAnimalCategories.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(addAnimalToCategory.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
       .addCase(removeAnimalFromCategory.fulfilled, (state, action) => {
-        state.data = state.data.filter(ac => ac.id !== action.payload);
+        const { animalId, categoryId } = action.payload;
+        state.data = state.data.filter(ac => ac.animal_id !== animalId || ac.category_id !== categoryId);
       });
   },
 });
 
-export const { 
-  setAnimalCategories, 
-  addAnimalCategoryLocal, 
-  updateAnimalCategoryLocal, 
-  deleteAnimalCategoryLocal 
-} = animalCategorySlice.actions;
-
+export const { setAnimalCategories, addAnimalCategoryLocal, updateAnimalCategoryLocal, deleteAnimalCategoryLocal } = animalCategorySlice.actions;
 export default animalCategorySlice.reducer;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAnimalCategory } from '../redux/slices/animalCategorySlice';
-import { createAnimalCategory } from '../services/api';
+import { addAnimalToCategory } from '../redux/slices/animalCategorySlice';
 
 const AnimalCategoryForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -10,8 +9,8 @@ const AnimalCategoryForm = ({ onSubmit }) => {
   });
 
   const dispatch = useDispatch();
-  const animals = useSelector(state => state.animals);
-  const categories = useSelector(state => state.categories);
+  const animals = useSelector(state => state.animals.data); 
+  const categories = useSelector(state => state.categories.data); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +20,14 @@ const AnimalCategoryForm = ({ onSubmit }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newAnimalCategory = await createAnimalCategory(formData);
-    dispatch(addAnimalCategory(newAnimalCategory));
+  
+    const newAnimalCategory = {
+      animalId: formData.animal_id,
+      categoryId: formData.category_id,
+    };
+    dispatch(addAnimalToCategory(newAnimalCategory));
     onSubmit();
   };
 
@@ -47,4 +50,4 @@ const AnimalCategoryForm = ({ onSubmit }) => {
   );
 };
 
-export default AnimalCategoryForm
+export default AnimalCategoryForm;

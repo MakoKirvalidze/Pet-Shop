@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://crudapi.co.uk/api/v1';
-const API_KEY = 'ab6sm2yByeIjF4xQw_Xw_jDuBhO8_g-RjnmwTnzTCo0AVgL1Ew'
+const API_KEY = 'ab6sm2yByeIjF4xQw_Xw_jDuBhO8_g-RjnmwTnzTCo0AVgL1Ew';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${API_KEY}`,

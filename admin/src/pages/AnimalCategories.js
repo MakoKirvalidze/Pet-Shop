@@ -5,6 +5,7 @@ import { fetchAnimals } from '../redux/slices/animalSlice';
 import { fetchCategories } from '../redux/slices/categorySlice';
 import { addAnimalToCategory, removeAnimalFromCategory } from '../redux/slices/animalCategorySlice';
 
+
 const AnimalCategories = () => {
   const dispatch = useDispatch();
   const { data: animals } = useSelector(state => state.animals);

@@ -8,6 +8,7 @@ import Categories from './pages/Categories';
 import AnimalCategories from './pages/AnimalCategories';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import './App.css'
 
 const App = () => {
   return (
